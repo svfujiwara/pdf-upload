@@ -1,0 +1,22 @@
+service: slack-pdf-upload
+frameworkVersion: '2'
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:env, 'dev'}
+  region: ap-northeast-1
+  environment:
+    SLACK_SIGNING_SECRET: ${env:SLACK_SIGNING_SECRET}
+    SLACK_BOT_TOKEN: ${env:SLACK_BOT_TOKEN}
+    GOOGLE_DRIVE_FOLDER_ID: ${env:GOOGLE_DRIVE_FOLDER_ID}
+    SLACK_CHANNEL_ID: ${env:SLACK_CHANNEL_ID}
+functions:
+  upload:
+    handler: dist/app.handler
+    events:
+      - http:
+          path: slack/events
+          method: post
+plugins:
+  - serverless-offline
+  - serverless-dotenv-plugin
